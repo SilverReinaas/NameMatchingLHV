@@ -23,7 +23,7 @@ namespace App
                 char[] delimiters = { ' ', ',', '-' }; //delimiters that split the full name to first name, middle name, last name, etc.
                 double matchThreshold = 0.65; //threshold % of parts of name that has to match (ex. Bin Laden <> Osama Bin Laden = 0.66)
 
-                List<string> result = GetMatchingNames(nameToValidate, blackListNames, delimiters, matchThreshold);
+                List<string> result = GetMatchingNames(nameToValidate, blackListNames, delimiters, noiseWords, matchThreshold);
 
                 if (result.Any())
                 {
@@ -86,12 +86,17 @@ namespace App
             return matches;
         }
 
-        static List<string> GetMatchingNames(string nameToValidate, List<string> blackListNames, char[] nameDelimiters, double matchPercentThreshold)
+        static List<string> GetMatchingNames(string nameToValidate, 
+                                            List<string> blackListNames, 
+                                            char[] nameDelimiters, 
+                                            List<string> noiseWords, 
+                                            double matchPercentThreshold)
         {
             List<string> result = new List<string>();
             
             List<string> nameParts = nameToValidate.Split(nameDelimiters).ToList();
             nameParts.RemoveAll(x => string.IsNullOrWhiteSpace(x));
+            nameParts.RemoveAll(x => noiseWords.Exists(y => y.ToLower() == x.ToLower())); //remove noise words from input name
 
             foreach (var blackListName in blackListNames)
             {
