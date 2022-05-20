@@ -98,8 +98,8 @@ namespace App
                 List<string> blackListNameParts = blackListName.Split(nameDelimiters).ToList();
                 blackListNameParts.RemoveAll(x => string.IsNullOrWhiteSpace(x));
 
-                int matches = GetMatchesCountBetweenLists(blackListNameParts, nameParts); //comparing blacklist name against input name
-                int total = blackListNameParts.Count;
+                int matches = GetMatchesCountBetweenLists(blackListNameParts, nameParts);
+                int total = blackListNameParts.Count > nameParts.Count ? blackListNameParts.Count : nameParts.Count; //depending on which has more names, is total
 
                 double matchPercent = (double)matches / total;
                 if (matchPercent >= matchPercentThreshold)
